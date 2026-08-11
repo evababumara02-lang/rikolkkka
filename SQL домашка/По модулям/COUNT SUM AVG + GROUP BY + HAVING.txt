@@ -1,0 +1,40 @@
+-- задание 1
+SELECT type COUNT (cnt) FROM locations 
+GROUP BY type
+
+-- задание 2
+SELECT type, AVG ( danger_level) FROM locations 
+GROUP BY type
+
+-- задание 3
+SELECT issued_by COUNT (cnt) FROM quests 
+GROUP BY issued_by
+
+-- задание 4
+SELECT  issued_by, reward_gold COUNT (cnt) FROM quests 
+WHERE reward_gold NOT NULL
+GROUP BY issued_by
+
+-- задание 5
+SELECT event_type, risk_level FROM events 
+GROUP BY AVG event_type HAVING >=7
+
+--  задание 6
+SELECT   species, strength_level AVG ( avg_strength) FROM characters
+GROUP BY strength_level > 6
+
+-- задание 7
+SELECT role_in_event, character_id COUNT ( *) cnt FROM event_participants
+GROUP BY  role_in_event SU
+
+-- задание 8
+SELECT location_id COUNT ( *)  cnt FROM events
+WHERE location_id >= 2
+
+-- задание 9
+SELECT location_id, MAX (risk-level) max_risk FROM events
+GROUP BY location_id
+
+-- задание 10
+SELECT species SUM (alignment) evil FROM characters
+GROUP BY species
