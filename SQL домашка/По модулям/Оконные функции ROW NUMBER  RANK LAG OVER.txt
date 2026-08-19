@@ -1,0 +1,56 @@
+-- задача 1
+select event_id, location_id, risk_level,
+       rank () over ( partition by location_id order by risk_level desc) as rank_risk
+       from events e;
+
+-- задача 2
+with r as (select species, strength_level , name, 
+row_number () over ( partition by species order by strength_level desc, name ) as rn
+from "characters" c)
+select *
+from r
+where rn <= 2;
+
+--задача 3
+select name, alignment, strength_level, avg (strength_level) over (partition by strength_level order by alignment desc ) avg_strenth
+from "characters" c;
+
+-- задача 4
+with avg as (select *,avg (strength_level) over (partition by species) as avg_strength
+from characters)
+select name, strength_level, species 
+from avg 
+where strength_level > avg_strength
+
+-- задача 5
+select quest_id, quest_name, reward_gold , issued_by,
+reward_gold/ sum (reward_gold) over (partition by issued_by ) as reward_share
+from quests q 
+where q.success is not null;
+
+-- задача 6
+select quest_id, quest_name, reward_gold , issued_by, 
+reward_gold  - lag (reward_gold) over (partition by issued_by order by quest_id ) as difference
+from quests q
+where reward_gold is not null
+
+-- задача 7
+with cnt as ( select start_day, count (*)as cnt from events e group by start_day) 
+select start_day, cnt, sum(cnt) over (order by start_day) as total
+from cnt 
+
+-- задача 8
+with cnt as (select event_type, count (*) as cnt_event from events group by event_type)
+select event_type, cnt_event, sum (cnt_event) over () as total_event, cnt_event / sum (cnt_event) over () as share
+from cnt
+
+-- задача 9
+with risk as ( select location_id ,event_id, risk_level,
+row_number () over (partition by location_id order by risk_level desc, event_id from events e ) as rn
+select *
+from rn 
+where rn=1;
+
+-- задача 10
+select issued_by, quest_id, quest_name, row_number () over ( partition by issued_by order by quest_id) as row_number
+from quests
