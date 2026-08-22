@@ -1,0 +1,32 @@
+-- задача 1
+select * from events where end_day is null
+
+-- задача 2
+select count(*) as open_event  from events where end_day is null
+
+-- задача 3
+select avg(coalesce (end_day,start_day)-start_day+1) as avg_dur from events
+
+-- задача 4
+select MIN(coalesce( reward_gold,0)) as min_reward, 
+MAX(reward_gold) as  max_reward from quests;
+
+-- задача 5
+select quest_name, reward_gold, coalesce (reward_gold,0) as reward_filled from quests;
+
+-- задача 6
+select * from "characters" c where intelligence_level is null and is_magical = 1;
+
+-- задача 7
+select count (success) as cnt  from quests where success is null;
+
+-- задача 8
+select round (avg (coalesce (success,0)),5) as success_rate from quests;
+
+-- задача 9
+select name, coalesce (intelligence_level , -1) from "characters" c 
+
+-- задача 10
+select alignment, count (intelligence_level) as known_cnt,
+round (avg(intelligence_level),5) as avg_cnt
+from characters group by alignment
