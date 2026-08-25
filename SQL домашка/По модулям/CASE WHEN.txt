@@ -1,0 +1,69 @@
+-- задача 1
+ select event_id, risk_level,
+ case when risk_level>=8 then 1 else 0 end as hight_risk
+ from events e;
+
+-- задача 2
+select location_id, 
+sum (case when risk_level >=8 then 1 else 0 end) as high_risk_sum
+from events e  group by location_id;
+
+-- задача 3
+select species, count (*) as cnt , 
+sum (case when is_magical >=8 then 1 else 0 end) as is_magical_sum,
+sum (case when intelligence_level >=8 then 1 else 0 end) as  intelligence_level_sum
+from "characters" c group by species;
+
+-- задача 4
+select issued_by, count (*) as cnt_quests,
+sum ( case when success=1 then 1 else 0 end) as success_cnt,
+sum (case when success =0 or success is null then 1 else 0 end) as fail_or_unknown
+from quests group by issued_by
+
+-- задача 5
+select quest_id,reward_gold, 
+case when reward_gold is null then 'low' 
+                      when reward_gold <=100 then 'low' 
+                      when reward_gold <=200 then 'medium'
+                      else 'high'
+                      end as reward_bucket
+from quests q 
+
+-- задача 6
+with classifild as (select character_id, name, species,  alignment, strength_level,
+intelligence_level, is_magical, 
+                     case when alignment ='evil' then 'threat'
+                          when strength_level >= 8 then 'strong'
+                          when is_magical =1 then 'magical' else 'standart'
+                          end as category 
+from characters) 
+select character_id, name, species,  alignment, strength_level,
+intelligence_level, is_magical, category 
+from classifild where category = 'threat';
+
+-- задача 7
+with X as ( select case when  alignment ='evil' then 'threat'
+                         when strength_level >= 8 then 'strong' else 'standart'
+                          end as category from characters)
+ select category , count (*)  cnt
+ from X group by category;
+
+-- задача 8
+ select event_type, sum (case when risk_level >= 9 then 1 else 0 end ) as critical_cnt
+ from events e group by event_type
+ 
+ -- задача 9
+ select  sum(case when (coalesce (end_day, start_day)-start_day+1)>1 then 1 else 0 end)
+ as during_event from events
+ 
+ -- задача 10
+ with X as ( select ch.character_id, name,
+       count (event_id) events_cnt 
+       from characters ch
+  left join  event_participants ep
+    on ep.character_id=ch.character_id
+  group by ch.character_id,ch.name)
+select  name,
+       events_cnt,
+       case when events_cnt>=2 then 1 else 0 end is_active
+  FROM X;
