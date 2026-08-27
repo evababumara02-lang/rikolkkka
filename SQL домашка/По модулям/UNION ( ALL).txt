@@ -1,0 +1,78 @@
+-- задача 1
+select c.strength_level as score,
+'characters' as source
+from characters c 
+union all
+select risk_level as score,
+'risk_level' as source
+from events
+
+-- задача 2
+select  species as unique
+from "characters" c 
+union 
+select type as unique 
+from locations
+
+-- задача 3
+
+select 'character:'||character_id as id
+from "characters" c 
+union all
+select 'location:'|| location_id as id
+from locations l 
+union all 
+select 'event:'||  event_id as id
+from events e 
+
+-- задача 4
+
+select c.strength_level as score
+from "characters" c 
+union all
+select l.danger_level  as score
+from locations l 
+order by score desc limit 10
+
+-- задача 5
+select 'characters' as src,
+count (*) as cnt
+from "characters" c 
+union all select 'locations' as src,
+count (*) cnt
+from locations l 
+union all select 'events' as src,
+count (*) as cnt
+from events
+
+-- задача 6
+select quest_name, 'success' as status
+from quests q where success=1
+union all select quest_name, 'fail' as status
+from quests q where success=0
+union all select quest_name, 'unknown' as status
+from quests q where success is null;
+
+-- задача 7
+select name as titels
+from "characters" c 
+union select quest_name as titels
+from quests q 
+
+-- задача 8
+select type as swamp
+from locations l where type = 'swamp'
+union all select quest_name as title
+from quests  where lower (quest_name) like '% swamp%';
+
+-- задача 9
+select event_type as name
+from events e 
+union select issued_by as name
+from quests;
+
+-- задача 10
+select strength_level as score, case when strength_level >=8 then 'high' else 'low' end as level
+from "characters" c  
+union all select danger_level as score, case when danger_level >=8 then 'high' else 'low' end as level
+from locations l 
