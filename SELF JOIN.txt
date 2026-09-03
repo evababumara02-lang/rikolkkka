@@ -1,0 +1,32 @@
+-- задача 1
+ select a.species  ,  b.species a , a.name as a2, b.name as b2
+ from characters a
+ join characters b
+ on a.species=b.species
+ and  a.name < b.name
+ 
+ -- задача 2
+ select a.location_id, b.location_id, a.type,  a.danger_level as a , b.danger_level as b
+ from locations a 
+ join locations b
+ on a.type=b.type and a.location_id < b.location_id
+ where a.danger_level<>b.danger_level
+ 
+ -- задача 3
+ select distinct  a.character_id, a.name, a.species,  a.strength_level
+ from characters a
+ join characters b
+ on  a.species = b.species and a.strength_level=b.strength_level and  a.character_id<> b.character_id 
+ 
+ -- задача 4
+ select a.event_id, b.event_id, a.event_type, b.event_type, a.location_id, b.location_id
+ from events a
+ join events b
+ on  a.location_id= b.location_id and a.event_type=b.event_type
+ where a.event_id < b.event_id
+ 
+ -- задача 5
+ select a.species, a.name as magical1, b.name as magical2
+ from characters a
+ join characters b
+ on a.species=b.species and a.magical1=1 and b.magical2=0 
