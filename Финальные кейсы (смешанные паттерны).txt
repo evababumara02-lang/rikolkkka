@@ -1,0 +1,122 @@
+-- задача 1
+select c.name, count (ep.role_in_event) as cnt_event, 
+case when c.alignment = 'evil' then 1 else 0 end as is_evil,
+case when c.intelligence_level >=5 then 1 else 0 end as intelligence,
+ c.is_magical 
+from "characters" c 
+join event_participants ep 
+on c.character_id=ep.character_id
+group by c.name, is_evil, intelligence, is_magical;
+
+
+-- задача 2
+with x as (select c.character_id, 
+case when c.alignment='evil' then 'threat'
+     when c.is_magical = 1 then 'special' else 'standart'
+     end as segment,
+     count (ep.event_id) as cnt_events
+ from "characters" c 
+ join event_participants ep 
+ on c.character_id=ep.character_id
+ group by c.character_id,segment)
+ select segment, count (*) chars_cnt ,round(avg(x.cnt_events),3) as avg_event
+ from x
+ group by segment
+ 
+ -- 3адача 3
+ select issued_by, count (*) as quests_cnt, coalesce(avg(reward_gold),0) as avg_reward,
+ avg(success) as success_rate
+ from quests q 
+ where success is not null
+ group by issued_by
+ 
+ -- задача 4
+ with fulltab as (
+select q.quest_id, sum(reward_gold), risk_level, reward_gold/risk_level as reward_per_risk
+from events e
+join quest_events qe
+on e.event_id = qe.event_id
+join quests q on q.quest_id = qe.quest_id)
+
+select distinct(quest_id), reward_gold, (select avg(risk_level) from fulltab) as risk_level,
+reward_per_risk from fulltab
+where reward_per_risk > (select avg(reward_per_risk) from fulltab)
+ 
+-- задача 5
+select  name,
+  sum(risk_level) as sum_risk
+from  locations
+join  events on locations.location_id = events.location_id 
+group by name
+order by sum(risk_level) desc
+limit 5
+
+
+-- задача 6
+select name,
+  count(event_id) as event_cnt
+from  "characters" c 
+join  event_participants ep on c.character_id = ep.character_id
+group by name 
+order by count(event_id) desc
+limit 10
+
+-- задача 7
+with cte as (
+ select location_id, count(event_id) as event_cnt
+ from  events 
+ group by location_id),
+  cte2 as (
+ select location_id, count(event_id) as high_risk_cnt
+ from events
+ where risk_level >= 8
+ group by location_id)
+ 
+select name, coalesce((high_risk_cnt * 1.0 /event_cnt), 0) as rate
+from cte2 right join cte on cte.location_id = cte2.location_id
+join locations on cte.location_id = locations.location_id
+
+-- задача 8
+with cte as (select  'character', 
+  character_id,
+  name,
+  strength_level as risk_level
+from    "characters")
+union all (select  'location',
+    location_id,
+    name,
+    danger_level
+from  locations)  
+union all
+(select  'event',
+   event_id,
+   event_type,
+   risk_level
+from events))
+select *
+from cte
+order by risk_level desc
+limit 15
+
+-- задача 9
+select t1.name as name1, t2.name as name2, t1.alignment as al1, t2.alignment as al2
+from characters t1
+join characters t2
+on t1.alignment <> t2.alignment and t1.character_id <> t2.character_id
+
+-- задача 10
+with fulltab as (
+ select ep.event_id, ep.character_id, c.risk_level, c.strength_level
+ from event_participants
+ join events 
+ on ep.event_id = events.event_id
+ join characters 
+ on c.character_id = ep.character_id),
+ 
+    negotiate as (
+ select event_id, risk_level, max(strength_level) as max_strength
+ from  fulltab
+ group by event_id, risk_level)
+ select event_id
+ from negotiate 
+ where risk_level>max_strenght
