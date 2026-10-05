@@ -1,0 +1,86 @@
+-- задача 1
+select client_id 
+from web_clients
+union
+select client_id 
+from app_clients
+
+-- задача 2
+select user_id, event_name
+from web_events
+union all
+select user_id, event_name
+from mobile_events
+
+1       login
+1	pay
+2	login
+1	pay
+3	login
+3	logout
+
+-- задача 3
+select distinct client_id, city
+from crm_clients
+union 
+select distinct client_id, city
+from billing_clients
+
+-- задача 4
+select cast ( user_id as integer) as user_id
+from old_users
+union 
+select user_id
+from new_users
+
+-- задача 5
+
+select payment_dt
+from payments
+where payment_dt => 2026-01-01 and payment_dt < '2026-02-01'
+union 
+select refund_dt
+from refunds
+where refund_dt >= '2026-02-01' and refund_dt<'2026-03-01'
+
+-- задача 6
+select num 
+from a
+union 
+select num 
+from b
+order by num ASC
+
+-- задача 7
+
+select sale_id as online, amount
+from online_sales 
+union all
+select sale_id as offline, amount
+from offline_sale
+
+-- задача 8
+select client_id
+from email_clients
+intersect
+select client_id
+from push_client
+20,30
+
+-- задача 9
+select client_id
+from all_clients
+except
+select client_id
+from blocked_clients
+1, 3
+
+-- задача 10
+select sum (amount) as ravenue, sale_dt
+from sales_2025
+union all
+select sum ( amount) as revenue, sale_dt
+from sales_2026
+order by sales_dt
+
+
