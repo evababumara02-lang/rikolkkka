@@ -1,0 +1,71 @@
+-- задача 1
+
+select month_dt, revenue, revenue- lag (revenue) over ( order by month_dt) as diff_reven
+from monthly_revenue
+
+-- задача 2
+
+select client_id, order_id, otder_dt,  lead ( order_dt) over ( partition by client_id order by order_dt) as next_order
+from orders
+
+-- задача 3
+
+select product_id, changed_at, price, lag ( price) over ( partition by product_id order by changed_at) as lag_price
+from price_history 
+
+-- задача 4
+
+select dt, metric, (metric- lag ( metric) over ( order by dt))*100.0/ lag ( metric) over ( order by dt) as last_metric,
+from daily_metrics
+
+-- задача 5
+
+with event_gaps( select user_id, event_dt, lag (event_dt) over (partition by user_id order by event_dt) as previus_event_dt
+                from events)
+select user_id, event_dt, previus_event_date
+from event_gaps
+where evnt_dt-previus_event_dt>7
+
+-- задача 6
+
+with x (select ticket_id, changed_at, status, lag ( status) over ( patition by ticked_id order by changed_at) as lag_status
+from ticket_status)
+
+select ticket_id, changed_at, status, lag_status
+from x
+where status<> lag_status
+
+-- задача 7
+
+with x as (select client_id, visit_dt, lead ( visit_dt) over ( partition by client_id order by visit_dt) as next_visit
+           from visits )
+select client_id, visit_dt, next_visit, next_visit-visit_dt as days_to_next
+from visits
+order by client_id, visit_dt
+
+-- задача 8
+
+with x as (select sku_id, stock_dt, stock_cnt, lag ( stock_cnt) over ( partition by sku_id order by stock_dt) as last_stock 
+        from stock)
+
+select sku_id, stock_dt, stock_cnt, last_stock-stock as diff_stock
+from x
+order by stock_dt, sku_id
+
+-- задача 9
+
+select X as (select dt, amount, lag ( amount) over (order by dt ) as last_amount
+from revenue)
+select dt, amount, last_amount 
+from X
+where amount < last_amount 
+
+-- задача 10
+
+with X as (select event_dt,  lead ( event_dt) over ( order by event_dt) AS next_event_dt 
+           from calendar_events)
+select event_dt,  next_event_dt 
+from X 
+where next_event_dt - event_dt <>1 
+
+
