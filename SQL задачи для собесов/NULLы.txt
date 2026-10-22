@@ -1,0 +1,54 @@
+- - задача 1
+select account_id, close_dt
+from accounts 
+where close_dt is NULL
+- - задача 2 
+select account_id, coalesce ( balance, 0)
+from accounts
+ - - задача 3
+select clients_id, count ( phone)
+from clients 
+- задача 4
+select o. client_id, o.order_id
+from orders
+left join
+select c.client_id 
+from clients 
+left join orders 
+on o. client_id = c.client_id
+where o.order_id IS NULL
+
+-- задача 5
+select client_id
+from clients
+where NOT EXIST ( select * 
+from blacklist
+on c.client_id= b.client_id)
+
+-- задача 6
+
+select coalesce ( city, 'unknown' ) as city_x , COUNT (*) as cnt_clients
+from clients
+group by coalesce ( city, 'unknown' )
+
+-- задача 7
+
+select sale_id, price*qty- COALESCE ( discount, 0) as total_price
+from sales
+
+-- задача 8
+
+select ticked__id, status
+from tickets 
+where status is NULL or 'error'
+
+-- задача 9
+
+select id
+from changes
+where old_value is DISTINCT from new_value
+
+-- задача 10
+select client_id, case when email IS NULL 0 elese 1 end as emails
+from clients 
+
