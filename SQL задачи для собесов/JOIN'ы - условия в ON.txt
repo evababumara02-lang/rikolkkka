@@ -1,0 +1,61 @@
+-- задача 1
+select  s.sales_id s. produt_id, s. sale_dt,  p. price
+from sales
+join  prices
+on s.product_id=p.product_id, s.sales_dt >= p.valid_from, s.sales_dt <= p.valid_to
+
+-- задача 2
+select p.payment_id, p.amount, c.rate
+from payments p
+join commission_rules c
+on c. amount_from >= p.amount, c.amount_to <= p.amount
+
+-- задача 3
+select o.operation_id, o.currency, o.operation_dt, o.amount. r.rate,o.amount*r.rate as amount_rub
+from operations
+join rates
+on  o.currency= r.currency and  o.operation_dt <= rate_dt 
+
+-- задача 4
+select o.order_id, o.client_id, o.order_dt, c.segment
+from otders o
+join client_segments c
+on o.order_id= c.o.order_id, o.order_dt>= c.valid_from and o.order_id < c.valid_to
+
+-- задача 5
+select o.order_id
+from orders o
+join promos p
+on o.promo_code = p.promo_code, o.order_dt >= p. date_from, o.order_dt < p.date_to
+
+-- задача 6
+select b.room_id
+from bookings b
+join repairs r
+on b.room_id=r.room_id, b. starts_ts< r.end_ts and b.end_ts>r.start_ts
+
+-- задача 7
+
+select s.user_id, s.email , c.crm_id
+from site_users s
+join crm_users c
+on  LOWER (s.email)= LOWER (c.users)
+
+-- задача 8
+select o.order_id, o.amount - d.discount_pct
+from orders o
+join discounts d
+on o.amount >= d.min_amount and o.amount < d.max_amount
+
+-- задача 9
+select o.operation_id, e.department
+from operations o
+join employee_dept e
+on o.operation_id=e.operation_id, o.operation_dt >= e.valid_from, o.operation_dt <= e.valid_to
+
+-- задача 10
+select c.client_id, o.order_id
+from clients c
+left join orders o
+on c.client_id=o.client_id, o.order_dt >= DATE '2026-04-01' and  o.order_dt < DATE '2026-05-01'
+
