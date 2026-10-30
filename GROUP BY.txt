@@ -1,0 +1,58 @@
+-- задача 1
+select order_id, count ( category) as cnt_category, sum ( amount) as sum_amount
+from orders
+group by category 
+
+-- задача 2 ( есть ошибка в условии задачи)
+select user_id
+from orders 
+group by user_id
+having count ( distinct date_trunc ( 'month', orser_dt) =2
+
+-- задача 3
+select tarif, avg (amount) as avg_amount
+from payments
+ group by tariff
+having count (*) >= 2
+
+-- задача 4
+select order_id, count ( distinct sku_id) as unique_sku
+from order_items
+group by order_id
+
+-- задача 5
+
+select client_id, count (*) filter ( where status = 'success') as cnt_success, count (*) filter ( where status = 'fail') as cnt_fail
+from payments 
+group by client_id
+
+-- задача 6
+
+select client_id, min ( order_dt) as first_order_dt, max ( order_dt) as last_order_dt
+from orders
+group by client_id
+
+-- задача 7
+select date_trunk ( 'month', order_dt) as month_dt , sum ( amount ) as sum_amount
+from orders
+group by date_trunk ( 'month', order_dt)
+
+-- задача 8
+select client_id, sum ( amount) as sum_amount
+from orders
+group by client_id having sum_amount>=1000
+
+-- задача 9
+with by_category as (select category, sum ( amount) as revenue
+from orders
+group by category)
+select category, ravenue, revenue * 1.0/ sum ( revenue) over () as revenue_share
+from by_category
+
+-- задача 10
+select count( * ) as cnnt_orders, case when amount> 1000 then 'big'else 'small' end size_orders
+from orders 
+group by case when amount> 1000 then 'big'else 'small' end
+
+
+
