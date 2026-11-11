@@ -1,0 +1,70 @@
+-- задача 1
+
+with X as ( select *, dense_rank() over (partition by dep_id order by salary DESC) as rnk
+           from employees)
+select *
+from X
+where rnk=2
+
+--задача 2
+
+select name, score,
+       rank () over ( order by score DESC) as rank,
+       dense rank () over ( order by score DESC ) as dns_rank
+from scores 
+
+-- задача 3
+with X as ( seelct *, rank () over ( order by revenue asc) as rank
+           from products)
+select *
+from X
+where rank <=3
+
+-- задача 4
+select * , dense_rank ()over ( order by points desc)
+from teams
+
+-- задача 5
+
+with X as (select *, dense_rank () over ( order by total_amount desc) as dns_rank
+from client_totals) 
+
+select *
+from X
+where dns_rank =3
+
+-- задача 6
+
+select *, dense_rank () over ( partition by month_dt order by revenue desc ) as rnk_product
+from sales 
+
+-- задача 7
+with X as ( select score, name, dense_rank () over ( order by score ASC) as rnk
+from results)
+
+select score, name, rnk
+from x
+where rnk <= 2
+
+-- задача 8
+ with x as ( select category, sum ( amount) as revenue 
+            from orders 
+            group by category)
+select category, revenue , dense_rank () over ( order by revenue desc ) as rnk
+from x
+
+-- задача 9
+with x as (select *, rank () over ( order by score desc) as rnk
+from scores)
+select *
+from x 
+where rnk=1
+
+-- задача 10
+with x as ( select value, dense_rank () over ( order by value desc) as rnk
+           from numbers)
+select distinct value
+from x
+where rnk=2
+
+
