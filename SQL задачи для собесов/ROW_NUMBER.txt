@@ -1,0 +1,84 @@
+-- задача 1
+
+with x as (select *, row_number () over ( partition_by entity_id order by event_dt DESC) as r_n
+           from history)
+select entity_dt. event_dt, value
+from w
+where r_n=1
+
+-- задача 2
+with x as ( select *, row_number () over ( partition by client_id  order by  order_id asc) as rn
+           from orders)
+select client_id, order_id, order_dt
+from x
+where rn <= 3
+
+-- задача 3
+with x as ( select * , row_number () over ( partition by user_id, event_id order by leaded_at DESC) as rn
+           from events)
+select user_id, event_id, loaded_at
+from x 
+where rn=1
+
+-- задача 4
+
+with x as ( select *, row_number () over ( partition by user_id orber by amount desc) as rn
+          from payments)
+select user_id, payment_id, amount
+from x
+where rn=1
+
+-- задача 5
+
+with X as ( select *, row_number () over ( partition by client_id order by order_dt asc) as rn
+           from orders)
+select client_id, order_id, order_dt
+from x
+where rn=1
+
+-- задача 6
+
+with x as ( select *, row_number () over ( partition by ticked_id order by  changed_at desc) as rn
+           from ticket_status)
+select ticked_id, status
+from x
+where rn=1
+
+-- задача 7
+with x ( select *, row_number () over ( partition by email order by created_at desc) as rn
+        from users)
+select user_id, email, created_at
+from x
+where rn=1
+
+-- задача 8
+
+with x as ( select *, row_number () over ( partition by client_id order by  ordar_dt ) as rn
+          from orders)
+select client_id, order_id, order_dt
+from x
+where rn=2
+
+-- задача 9
+with x as ( select *, partition by address, order by valid_from desc) as rn
+           from address_history
+            where valid_from <= DATE '2026-04-30')
+select address, valid_from
+from x
+where rn 
+
+-- задача 10
+with x as (select *, row_number () over ( partition by client order by amount desc, transaction_id asc) as rn
+          from transactions)
+select client_id, transaction_id, amount
+from x
+where rn=1
+
+
+
+
+
+
+
+
+
